@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cities.models import CityModel
+from cities.models import City
 
 
-admin.site.register(CityModel)
+admin.site.register(City)
