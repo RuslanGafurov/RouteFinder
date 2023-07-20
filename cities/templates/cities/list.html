@@ -8,22 +8,55 @@
 
 {% block content %}
 
-    <h1>Список городов</h1>
 
-        <div class="row">
-            <div class="col-md">
-                {% for object in objects_list %}
-                    <p>
-                        <a href="{% url 'cities:detail' pk=object.pk %}">
-                            {{ object.name }}
-                        </a>
-                    </p>
-                {% endfor %}
-            </div>
+    <div class="row my-3">
+        <div class="col-md-8 mx-auto">
+
+
+        <h1>Список городов</h1>
+
+            <table class="table my-3">
+                <thead>
+
+                </thead>
+                <tbody>
+
+                    {% for object in objects_list %}
+                        <tr class="table-light">
+                            <th>{{ object.name }}</th>
+                            <td>
+                                <a href="{% url 'cities:detail' object.id %}">
+                                    <button type="button" class="btn btn-outline-info btn-sm">
+                                        К описанию
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'cities:update' object.id %}">
+                                    <button type="button" class="btn btn-outline-primary btn-sm">
+                                        К редактированию
+                                    </button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'cities:delete' object.id %}">
+                                    <button type="button" class="btn btn-outline-danger btn-sm">
+                                        Удалить
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+            <h4>Добавить город</h4>
+
+            {% include 'form.html' with button='Сохранить' %}
+
         </div>
+    </div>
 
-    <h4>Добавить город</h4>
-
-    {% include 'form.html' with button='Сохранить' %}
 
 {% endblock content%}
