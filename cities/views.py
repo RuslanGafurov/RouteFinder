@@ -16,10 +16,10 @@ __all__ = (
 class CityListView(ListView):
     model = City
     template_name = 'cities/list.html'
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super(CityListView, self).get_context_data(**kwargs)
-        context['objects_list'] = City.objects.all()
         context['form'] = CityForm()
         return context
 
