@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import DetailView
 
+from cities.forms import CityForm
 from cities.models import City
 
 __all__ = (
@@ -10,8 +11,16 @@ __all__ = (
 
 
 def cities_list_view(request):
+    if request.method == 'POST':
+        form = CityForm(request.POST)
+        if form.is_valid():
+            form.save()
+    form = CityForm()
     query_set = City.objects.all()
-    context = {'objects_list': query_set}
+    context = {
+        'objects_list': query_set,
+        'form': form,
+    }
     return render(request, 'cities/list.html', context)
 
 

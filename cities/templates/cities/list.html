@@ -22,4 +22,11 @@
             </div>
         </div>
 
+    <h4>Добавить город</h4>
+
+    <form action="" method="post"> {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Сохранить" class="btn btn-primary">
+    </form>
+
 {% endblock content%}
