@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    {{ object }}
+{% endblock title%}
+
+
+{% block content %}
+
+    <h1>Редактирование города</h1>
+
+    {% include 'form.html' with button='Сохранить' %}
+
+{% endblock content%}
