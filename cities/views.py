@@ -1,30 +1,27 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, DeleteView, UpdateView
+from django.views.generic import DetailView, DeleteView, UpdateView, ListView
 
 from cities.forms import CityForm
 from cities.models import City
 
 __all__ = (
-    'cities_list_view',
+    'CityListView',
     'CityDetailView',
     'CityUpdateView',
     'CityDeleteView',
 )
 
 
-def cities_list_view(request):
-    if request.method == 'POST':
-        form = CityForm(request.POST)
-        if form.is_valid():
-            form.save()
-    form = CityForm()
-    query_set = City.objects.all()
-    context = {
-        'objects_list': query_set,
-        'form': form,
-    }
-    return render(request, 'cities/list.html', context)
+class CityListView(ListView):
+    model = City
+    template_name = 'cities/list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CityListView, self).get_context_data(**kwargs)
+        context['objects_list'] = City.objects.all()
+        context['form'] = CityForm()
+        return context
 
 
 class CityDetailView(DetailView):
