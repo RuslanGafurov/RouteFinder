@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, DeleteView
+from django.views.generic import DetailView, DeleteView, UpdateView
 
 from cities.forms import CityForm
 from cities.models import City
@@ -8,6 +8,7 @@ from cities.models import City
 __all__ = (
     'cities_list_view',
     'CityDetailView',
+    'CityUpdateView',
     'CityDeleteView',
 )
 
@@ -29,6 +30,13 @@ def cities_list_view(request):
 class CityDetailView(DetailView):
     queryset = City.objects.all()
     template_name = 'cities/detail.html'
+
+
+class CityUpdateView(UpdateView):
+    model = City
+    form_class = CityForm
+    template_name = 'cities/update.html'
+    success_url = reverse_lazy('cities:list')
 
 
 class CityDeleteView(DeleteView):
