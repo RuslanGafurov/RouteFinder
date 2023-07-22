@@ -9,7 +9,7 @@ class TrainForm(forms.ModelForm):
         label='Поезд',
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Введите поезд',
+            'placeholder': 'Введите название поезда',
         })
     )
     travel_time = forms.IntegerField(
