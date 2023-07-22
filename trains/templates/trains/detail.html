@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    Поезд
+    Детализация
 {% endblock title%}
 
 
@@ -18,5 +18,7 @@
 
     <p>Время в пути: {{ object.travel_time }}</p>
 
+    {% url 'trains:list' as action%}
+    {% include 'button.html' with action=action text='Назад' class='btn-primary'%}
 
 {% endblock content%}
