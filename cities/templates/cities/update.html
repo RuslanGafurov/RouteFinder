@@ -12,4 +12,7 @@
 
     {% include 'form.html' with button='Сохранить' %}
 
+    {% url 'cities:list' as action%}
+    {% include 'button.html' with action=action text='Назад' class='btn-primary' %}
+
 {% endblock content%}
