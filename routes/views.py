@@ -1,10 +1,28 @@
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.views.generic import DetailView, DeleteView, UpdateView, ListView, CreateView
+from django.shortcuts import render
+from django.views.generic import ListView
 
 from routes.forms import RouteForm
 from routes.models import Route
+from routes.services import get_routes
+
+
+def route_search_view(request):
+    if request.method == 'POST':
+        form = RouteForm(request.POST)
+        if form.is_valid():
+            try:
+                context = get_routes(request, form)
+            except ValueError as err:
+                messages.error(request, err)
+                return render(request, 'home.html', {'form': form})
+            return render(request, 'home.html', context)
+        else:
+            return render(request, 'home.html', {'form': form})
+    else:
+        form = RouteForm()
+        messages.error(request, 'Нет данных для поиска')
+        return render(request, 'home.html', {'form': form})
 
 
 class RouteListView(ListView):
