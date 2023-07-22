@@ -10,6 +10,22 @@
 
     <h1>Поиск маршрута</h1>
 
-    {% include 'form.html' with button='Сохранить' %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            {% if routes %}
+                <h3>Маршрут из г. {{ cities.from_city }} в г. {{ cities.to_city }}</h3>
+                {% for route in routes %}
+                    <p>Время в пути {{ route.total_time }}</p>
+                    <p>Список поездов по данному маршруту</p>
+                    {% for train in route %}
+                        <p>{{ train }}</p>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    {% url 'find_routes' as action %}
+    {% include 'form.html' with action=action button='Найти' %}
 
 {% endblock content%}
