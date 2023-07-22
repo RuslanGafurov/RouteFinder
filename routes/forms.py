@@ -8,14 +8,14 @@ class RouteForm(forms.Form):
         label='Откуда',
         queryset=City.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-control js-example-basic-single',
         })
     )
     to_city = forms.ModelChoiceField(
         label='Куда',
         queryset=City.objects.all(),
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-control js-example-basic-single',
         })
     )
     cities = forms.ModelMultipleChoiceField(
@@ -23,7 +23,7 @@ class RouteForm(forms.Form):
         queryset=City.objects.all(),
         required=True,
         widget=forms.SelectMultiple(attrs={
-            'class': 'form-control',
+            'class': 'form-control js-example-basic-multiple',
         })
     )
     route_form_travel_time = forms.IntegerField(
