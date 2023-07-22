@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Добавление
+{% endblock title%}
+
+
+{% block content %}
+
+    <h1>Добавление поезда</h1>
+
+    {% include 'form.html' with button='Сохранить' %}
+
+    {% url 'trains:list' as action%}
+    {% include 'button.html' with action=action text='Назад' class='btn-primary' %}
+
+
+{% endblock content%}
