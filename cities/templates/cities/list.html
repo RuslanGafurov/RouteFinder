@@ -97,11 +97,12 @@
                 </span>
             </div>
 
-
-            <h4>Добавить город</h4>
-
-            {% url 'cities:create' as action%}
-            {% include 'form.html' with button='Сохранить' action=action %}
+            <!-- Adding -->
+            <div class="container">
+                <h4>Добавить город</h4>
+                {% url 'cities:create' as action%}
+                {% include 'form.html' with button='Сохранить' action=action %}
+            </div>
 
         </div>
     </div>
