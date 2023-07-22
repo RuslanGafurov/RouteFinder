@@ -5,7 +5,7 @@ class Route(models.Model):
     name = models.CharField(
         max_length=50,
         unique=True,
-        verbose_name='Название маршрута',
+        verbose_name='Маршрут',
     )
     route_travel_time = models.PositiveSmallIntegerField(
         verbose_name='Общее время в пути'
