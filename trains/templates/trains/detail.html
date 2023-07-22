@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Поезд
+{% endblock title%}
+
+
+{% block content %}
+
+    <h1>Описание поезда</h1><br>
+
+    <p>Поезд: {{ object.name }}</p>
+
+    <p>Из города: {{ object.from_city }}</p>
+
+    <p>В город: {{ object.to_city }}</p>
+
+    <p>Время в пути: {{ object.travel_time }}</p>
+
+
+{% endblock content%}
