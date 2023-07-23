@@ -2,12 +2,8 @@ from trains.models import Train
 
 
 def dfs_paths(graph, start, goal):
-    """
-    Функция поиска всех возможных маршрутов
-    из одного города в другой. Вариант посещения
-    одного и того же города более одного раза,
-    не рассматривается.
-    """
+    """ Функция поиска всех возможных маршрутов из одного города в другой.
+    Вариант посещения одного и того же города более одного раза, не рассматривается. """
     stack = [(start, [start])]
     while stack:
         (vertex, path) = stack.pop()
@@ -19,70 +15,94 @@ def dfs_paths(graph, start, goal):
                     stack.append((next_, path + [next_]))
 
 
-def get_graph(query_set):
-    graph = {}
-    for query in query_set:
-        graph.setdefault(query.from_city_id, set())
-        graph[query.from_city_id].add(query.to_city_id)
+def get_graph(trains) -> dict:
+    """ Функция получения id всех городов, через которые проходят поезда.
+    (setdefault - чтобы не проверять есть ли ключ в графе) """
+    graph = {}  # ____________________________________________________________________ Словарь {'Откуда': 'Куда'}
+    for train in trains:
+        graph.setdefault(train.from_city_id, set())      # ___________________________ Вершина
+        graph[train.from_city_id].add(train.to_city_id)  # ___________________________ Значения
     return graph
 
 
-def get_routes(request, form) -> dict:
+def get_routes(form) -> dict:
+    """ Функция получения всех возможных маршрутов """
     context = {'form': form}
-    query_set = Train.objects.all()
-    graph = get_graph(query_set)
-    data = form.cleaned_data
-    from_city = data['from_city']
-    to_city = data['to_city']
-    cities = data['cities']
-    travel_time = data['route_form_travel_time']
-    all_ways = list(dfs_paths(graph, from_city.id, to_city.id))
-    if not len(all_ways):
+    trains = Train.objects.all()  # __________________________________________________ Все поезда
+    graph = get_graph(trains)  # _____________________________________________________ Id всех городов
+    data = form.cleaned_data  # ______________________________________________________ Данные, переданные пользователем
+    user_from_city = data['from_city']  # ____________________________________________ Откуда (от пользователя)
+    user_to_city = data['to_city']  # ________________________________________________ Куда (от пользователя)
+    user_cities = data['cities']  # __________________________________________________ Через города (от пользователя)
+    user_travel_time = data['route_form_travel_time']  # _____________________________ Время в пути (от пользователя)
+    all_routes = list(dfs_paths(graph, user_from_city.id, user_to_city.id))  # _______ Список всех возможных маршрутов
+    if not len(all_routes):  # _______________________________________________________ Если нет ни одного маршрута
         raise ValueError('Маршрута, удовлетворяющего условиям не существует')
-    # Отбор маршрутов через заданные пользователем города. ___________________
-    if cities:
-        temp_cities = [city.id for city in cities]
+
+    right_routes = get_through_cities(user_cities, all_routes)  # ____________________ Маршруты через заданные города
+    routes = get_by_travel_time(trains, right_routes, user_travel_time)  # ___________ Маршруты по заданному времени
+    sorted_routes = sort_by_travel_time(routes)  # ___________________________________ Сортированные маршруты по времени
+
+    context['routes'] = sorted_routes
+    context['cities'] = {
+        'from_city': user_from_city.name,
+        'to_city': user_to_city.name,
+    }
+    return context
+
+
+def get_through_cities(user_cities, all_routes) -> list:
+    """ Функция отбора маршрутов через заданные пользователем города. """
+    if user_cities:  # ________________________________________ Если есть города, через которые нужно проехать
+        user_cities_id = [city.id for city in user_cities]  # _ Список с id городов пользователя
         right_ways = []
-        for way in all_ways:
-            if all(city in way for city in temp_cities):
-                right_ways.append(way)
+        for route in all_routes:
+            if all(city in route for city in user_cities_id):
+                right_ways.append(route)  # ___________________ Добавляем маршрут, через выбранные пользователем города
         if not right_ways:
-            raise ValueError('Маршрут через эти города невозможен')
-    else:
-        right_ways = all_ways
-    # Отбор маршрутов по заданному пользователем времени в пути. _____________
+            if len(user_cities_id) == 1:
+                raise ValueError('Нет маршрута через заданный город')
+            else:
+                raise ValueError('Нет маршрута через заданные города')
+    else:  # __________________________________________________ Если не выбраны города, через которые нужно проехать
+        right_ways = all_routes
+    return right_ways
+
+
+def get_by_travel_time(trains, right_ways, user_travel_time) -> list:
+    """ Функция отбора маршрутов по заданному пользователем времени в пути. """
     routes = []
-    all_trains = {}
-    for query in query_set:
-        all_trains.setdefault((query.from_city_id, query.to_city_id), [])
-        all_trains[(query.from_city_id, query.to_city_id)].append(query)
+    all_trains = {}  # ________________________________________________________ Словарь {id откуда, id куда: Поезд}
+    for train in trains:
+        all_trains.setdefault((train.from_city_id, train.to_city_id), [])
+        all_trains[(train.from_city_id, train.to_city_id)].append(train)
+
     for way in right_ways:
-        temp = {'trains': []}
-        total_time = 0
-        for index in range(len(way) - 1):
-            query_set = all_trains[(way[index], way[index + 1])]
-            query = query_set[0]
-            total_time += query.travel_time
-            temp['trains'].append(query)
-        temp['total_time'] = total_time
-        if total_time <= travel_time:
-            routes.append(temp)
-    if not routes:
-        raise ValueError('Время в пути больше заданного')
-    # Сортировка маршрутов по времени в пути. ________________________________
+        tmp_dct = {'trains': []}  # ___________________________________________ {Общее время в пути: поезда}
+        total_time = 0  # _____________________________________________________ Общее время в пути
+        for index in range(len(way) - 1):  # __________________________________ Проходимся по всем парам городов
+            tmp_train = all_trains[(way[index], way[index + 1])][0]
+            total_time += tmp_train.travel_time
+            tmp_dct['trains'].append(tmp_train)
+        tmp_dct['total_time'] = total_time
+        if total_time <= user_travel_time:  # _________________________________ Если общее время в пути меньше заданного
+            routes.append(tmp_dct)  # _________________________________________ пользователем, то добавляем маршрут
+
+    if not routes:  # _________________________________________________________ Если список пуст, то нет маршрутов
+        raise ValueError('Время в пути больше заданного')  # __________________ удовлетворяющих заданные условия
+    return routes
+
+
+def sort_by_travel_time(routes) -> list:
+    """ Функция сортировки маршрутов по времени в пути. """
     sorted_routes = []
     if len(routes) == 1:
         sorted_routes = routes
     else:
-        times = list(set(route['total_time'] for route in routes))
+        times = sorted(list(set(route['total_time'] for route in routes)))  # _ Список неповторяющихся времен
         times = sorted(times)
         for time in times:
             for route in routes:
                 if time == route['total_time']:
                     sorted_routes.append(route)
-    context['routes'] = sorted_routes
-    context['cities'] = {
-        'from_city': from_city.name,
-        'to_city': to_city.name,
-    }
-    return context
+    return sorted_routes
