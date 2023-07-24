@@ -55,7 +55,7 @@
                             <td>{{ forloop.counter }}</td>
                         {% endif %}
                         <td>{{ train.name }}</td>
-                        <td>{{ train.from_city.name }} - {{ train.from_city.name }}</td>
+                        <td>{{ train.from_city.name }} - {{ train.to_city.name }}</td>
                         {% if route.trains|length > 1 %}
                             <td>{{ train.travel_time }}</td>
                         {% endif %}
