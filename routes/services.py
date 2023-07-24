@@ -4,7 +4,7 @@ from trains.models import Train
 def get_routes(form) -> dict:
     """ Функция получения всех возможных маршрутов """
     context = {'form': form}
-    trains = Train.objects.all()  # __________________________________________________ Все поезда
+    trains = Train.objects.all().select_related('from_city', 'to_city')  # ___________ Все поезда
     graph = get_graph(trains)  # _____________________________________________________ Id всех городов
     data = form.cleaned_data  # ______________________________________________________ Данные, переданные пользователем
     user_from_city = data['from_city']  # ____________________________________________ Откуда (от пользователя)
