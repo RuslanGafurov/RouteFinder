@@ -1,30 +1,6 @@
 from trains.models import Train
 
 
-def dfs_paths(graph, start, goal):
-    """ Функция поиска всех возможных маршрутов из одного города в другой.
-    Вариант посещения одного и того же города более одного раза, не рассматривается. """
-    stack = [(start, [start])]
-    while stack:
-        (vertex, path) = stack.pop()
-        if vertex in graph.keys():
-            for next_ in graph[vertex] - set(path):
-                if next_ == goal:
-                    yield path + [next_]
-                else:
-                    stack.append((next_, path + [next_]))
-
-
-def get_graph(trains) -> dict:
-    """ Функция получения id всех городов, через которые проходят поезда.
-    (setdefault - чтобы не проверять есть ли ключ в графе) """
-    graph = {}  # ____________________________________________________________________ Словарь {'Откуда': 'Куда'}
-    for train in trains:
-        graph.setdefault(train.from_city_id, set())      # ___________________________ Вершина
-        graph[train.from_city_id].add(train.to_city_id)  # ___________________________ Значения
-    return graph
-
-
 def get_routes(form) -> dict:
     """ Функция получения всех возможных маршрутов """
     context = {'form': form}
@@ -45,10 +21,34 @@ def get_routes(form) -> dict:
 
     context['routes'] = sorted_routes
     context['cities'] = {
-        'from_city': user_from_city.name,
-        'to_city': user_to_city.name,
+        'from_city': user_from_city,
+        'to_city': user_to_city,
     }
     return context
+
+
+def get_graph(trains) -> dict:
+    """ Функция получения id всех городов, через которые проходят поезда.
+    (setdefault - чтобы не проверять есть ли ключ в графе) """
+    graph = {}  # ____________________________________________________________________ Словарь {'Откуда': 'Куда'}
+    for train in trains:
+        graph.setdefault(train.from_city_id, set())      # ___________________________ Вершина
+        graph[train.from_city_id].add(train.to_city_id)  # ___________________________ Значения
+    return graph
+
+
+def dfs_paths(graph, start, goal):
+    """ Функция поиска всех возможных маршрутов из одного города в другой.
+    Вариант посещения одного и того же города более одного раза, не рассматривается. """
+    stack = [(start, [start])]
+    while stack:
+        (vertex, path) = stack.pop()
+        if vertex in graph.keys():
+            for next_ in graph[vertex] - set(path):
+                if next_ == goal:
+                    yield path + [next_]
+                else:
+                    stack.append((next_, path + [next_]))
 
 
 def get_through_cities(user_cities, all_routes) -> list:
