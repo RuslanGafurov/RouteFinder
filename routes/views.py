@@ -40,11 +40,8 @@ def add_route_view(request):
             total_time = int(data['total_time'])
             tmp_trains = data['trains'].split(',')
             trains_ids = [int(_id) for _id in tmp_trains if _id.isdigit()]
-
             trains = Train.objects.filter(id__in=trains_ids).select_related('from_city', 'to_city')
-
             cities = City.objects.filter(id__in=[from_city_id, to_city_id]).in_bulk()
-
             form = RouteModelForm(initial={
                 'from_city': cities[from_city_id],
                 'to_city': cities[to_city_id],
@@ -53,6 +50,20 @@ def add_route_view(request):
             })
             context['form'] = form
         return render(request, 'routes/create.html', context)
+    else:
+        messages.error(request, 'Невозможно сохранить несуществующий маршрут')
+        return redirect('/')
+
+
+def save_route_view(request):
+    if request.method == 'POST':
+        form = RouteModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Маршрут успешно сохранен')
+            return redirect('/')
+        else:
+            return render(request, 'routes/create.html', {'form': form})
     else:
         messages.error(request, 'Невозможно сохранить несуществующий маршрут')
         return redirect('/')
