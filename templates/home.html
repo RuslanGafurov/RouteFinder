@@ -61,7 +61,7 @@
                         {% endif %}
                         <td>
                             {% url 'trains:detail' train.id as action%}
-                            {% include 'button.html' with action=action text='Перейти' class='btn-info btn-sm' %}
+                            {% include 'button.html' with action=action type='button' text='Перейти' class='btn-info btn-sm' %}
                         </td>
                     </tr>
                     {% endfor %}
