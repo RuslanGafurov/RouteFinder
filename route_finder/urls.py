@@ -25,4 +25,5 @@ urlpatterns = [
     path('route_search/', route_search_view, name='route_search'),
     path('cities/', include(('cities.urls', 'cities'))),
     path('trains/', include(('trains.urls', 'trains'))),
+    path('routes/', include(('routes.urls', 'routes'))),
 ]
