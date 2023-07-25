@@ -23,8 +23,10 @@
                         <th scope="col">Из города</th>
                         <th scope="col">В город</th>
                         <th scope="col">Время в пути</th>
-                        <th scope="col">&nbsp;</th>
-                        <th scope="col">&nbsp;</th>
+                        {% if user.is_authenticated %}
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">&nbsp;</th>
+                        {% endif %}
                     </tr>
 
                 </thead>
@@ -46,13 +48,16 @@
                                     </button>
                                 </a>
                             </td>
-                            <td>
-                                <a href="{% url 'routes:delete' pk=object.id %}">
-                                    <button type="button" class="btn btn-outline-danger btn-sm">
-                                        Удалить
-                                    </button>
-                                </a>
-                            </td>
+                            {% if user.is_authenticated %}
+                                <td>
+                                    <a href="{% url 'routes:delete' pk=object.id %}">
+                                        <button type="button" class="btn btn-outline-danger btn-sm">
+                                            Удалить
+                                        </button>
+                                    </a>
+                                </td>
+                            {% endif %} &nbsp;
+
                         </tr>
                     {% endfor %}
 

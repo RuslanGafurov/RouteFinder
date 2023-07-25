@@ -28,14 +28,15 @@
                             <td>
                                 <a href="{% url 'cities:detail' object.id %}">
                                     <button type="button" class="btn btn-outline-info btn-sm">
-                                        К описанию
+                                        Описание
                                     </button>
                                 </a>
                             </td>
+                        {% if user.is_authenticated %}
                             <td>
                                 <a href="{% url 'cities:update' object.id %}">
                                     <button type="button" class="btn btn-outline-primary btn-sm">
-                                        К редактированию
+                                        Редактировать
                                     </button>
                                 </a>
                             </td>
@@ -46,8 +47,14 @@
                                     </button>
                                 </a>
                             </td>
+                        {% else %}
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        {% endif %}
                         </tr>
                     {% endfor %}
+
+
 
                 </tbody>
             </table>
@@ -97,15 +104,16 @@
                 </span>
             </div>
 
-            <!-- Adding -->
-            <div class="container">
-                <h4>Добавить город</h4>
-                {% url 'cities:create' as action%}
-                {% include 'form.html' with button='Сохранить' action=action %}
-            </div>
+            {% if user.is_authenticated %}
+                <!-- Adding -->
+                <div class="container">
+                    <h4>Добавить город</h4>
+                    {% url 'cities:create' as action%}
+                    {% include 'form.html' with button='Сохранить' action=action %}
+                </div>
+            {% endif %}
 
         </div>
     </div>
-
 
 {% endblock content%}

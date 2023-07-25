@@ -23,8 +23,10 @@
                         <th scope="col">В город</th>
                         <th scope="col">Время в пути</th>
                         <th scope="col">&nbsp;</th>
-                        <th scope="col">&nbsp;</th>
-                        <th scope="col">&nbsp;</th>
+                        {% if user.is_authenticated %}
+                            <th scope="col">&nbsp;</th>
+                            <th scope="col">&nbsp;</th>
+                        {% endif %}
                     </tr>
 
                 </thead>
@@ -37,26 +39,32 @@
                             <td>{{ object.to_city }}</td>
                             <td>{{ object.travel_time }}</td>
                             <td>
-                                <a href="{% url 'trains:detail' object.id %}">
+                                <a href="{% url 'trains:detail' pk=object.id %}">
                                     <button type="button" class="btn btn-outline-info btn-sm">
-                                        К описанию
+                                        Описание
                                     </button>
                                 </a>
                             </td>
-                            <td>
-                                <a href="{% url 'trains:update' object.id %}">
-                                    <button type="button" class="btn btn-outline-primary btn-sm">
-                                        К редактированию
-                                    </button>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{% url 'trains:delete' object.id %}">
-                                    <button type="button" class="btn btn-outline-danger btn-sm">
-                                        Удалить
-                                    </button>
-                                </a>
-                            </td>
+                            {% if user.is_authenticated %}
+                                <td>
+                                    <a href="{% url 'trains:update' pk=object.id %}">
+                                        <button type="button" class="btn btn-outline-primary btn-sm">
+                                            Редактировать
+                                        </button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'trains:delete' pk=object.id %}">
+                                        <button type="button" class="btn btn-outline-danger btn-sm">
+                                            Удалить
+                                        </button>
+                                    </a>
+                                </td>
+                            {% else %}
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            {% endif %}
+
                         </tr>
                     {% endfor %}
 
@@ -108,12 +116,14 @@
                 </span>
             </div>
 
-            <!-- Adding -->
-            <div class="container">
-                <h4>Добавить поезд</h4>
-                {% url 'trains:create' as action%}
-                {% include 'button.html' with action=action text='К добавлению' class='btn-primary' %}
-            </div>
+            {% if user.is_authenticated %}
+                <!-- Adding -->
+                <div class="container">
+                    <h4>Добавить поезд</h4>
+                    {% url 'trains:create' as action%}
+                    {% include 'button.html' with action=action text='Перейти' class='btn-primary' %}
+                </div>
+            {% endif %}
 
         </div>
     </div>
