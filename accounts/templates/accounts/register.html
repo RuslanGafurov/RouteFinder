@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Регистрация
+{% endblock title%}
+
+
+{% block content %}
+
+    <h1>Форма регистрации</h1>
+
+    {% include 'form.html' with button='Зарегистрироваться' %}
+
+{% endblock content%}
