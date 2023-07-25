@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    Маршруты
+{% endblock title%}
+
+
+{% block content %}
+
+    <div class="row my-3">
+        <div class="col-md-8 mx-auto">
+
+        <h1></h1>
+
+            <!-- Routes display -->
+            <h3>Детализация маршрута {{ object.name }}</h3>
+
+            <p>Направление: {{ object.from_city }} - {{ object.to_city }}</p>
+            <p>Общее время в пути: {{ object.route_travel_time }}</p>
+
+            <table class="table my-3">
+                <thead>
+
+                    <tr>
+                        <th scope="col">Поезд</th>
+                        <th scope="col">Из города</th>
+                        <th scope="col">В город</th>
+                        <th scope="col">Время в пути</th>
+                        <th scope="col">&nbsp;</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {% for train in object.trains.all %}
+                        <tr class="table-light">
+                            <td>{{ train.name }}</td>
+                            <td>{{ train.from_city }}</td>
+                            <td>{{ train.to_city }}</td>
+                            <td>{{ train.travel_time }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table><br>
+
+            <!-- Button -->
+            <div class="container">
+                <h4>Назад к маршрут{% if object.trains|length == 1 %}у
+                    {% else %}ам {% endif %}
+                </h4>
+
+                {% url 'routes:list' as action%}
+                {% include 'button.html' with action=action type='button' text='Перейти' class='btn-primary' %}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock content%}
