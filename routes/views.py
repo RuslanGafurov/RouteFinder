@@ -1,12 +1,21 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, DeleteView
 
 from cities.models import City
 from routes.forms import RouteForm, RouteModelForm
 from routes.models import Route
 from routes.services import get_routes
 from trains.models import Train
+
+__all__ = (
+    'add_route_view',
+    'save_route_view',
+    'RouteListView',
+    'RouteDetailView',
+    'RouteDeleteView',
+)
 
 
 def home_view(request):
@@ -75,3 +84,17 @@ class RouteListView(ListView):
     model = Route
     template_name = 'routes/list.html'
     paginate_by = 3
+
+
+class RouteDetailView(DetailView):
+    queryset = Route.objects.all()
+    template_name = 'routes/detail.html'
+
+
+class RouteDeleteView(DeleteView):
+    model = Route
+    success_url = reverse_lazy('routes:list')
+
+    def get(self, request, *args, **kwargs):
+        messages.success(request, 'Маршрут успешно удален')
+        return self.delete(request, *args, **kwargs)
