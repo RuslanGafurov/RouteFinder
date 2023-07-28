@@ -23,10 +23,10 @@ class Train(models.Model):
         related_name='to_city_set',
         verbose_name='В какой город'
     )
-    
+
     def __str__(self):
         return f"Поезд {self.name} из {self.from_city} в {self.to_city}"
-    
+
     class Meta:
         verbose_name = 'поезд'
         verbose_name_plural = 'поезда'
@@ -44,6 +44,6 @@ class Train(models.Model):
         if train.exists():
             raise ValidationError('Такой поезд уже существует')
 
-    def save(self, *args,  **kwargs):
+    def save(self, *args, **kwargs):
         self.clean()
         super(Train, self).save(*args, **kwargs)
