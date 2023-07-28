@@ -63,6 +63,9 @@ class RouteModelForm(forms.ModelForm):
     route_travel_time = forms.IntegerField(
         widget=forms.HiddenInput(),
     )
+    ids = forms.JSONField(
+        widget=forms.HiddenInput(),
+    )
 
     class Meta:
         model = Route

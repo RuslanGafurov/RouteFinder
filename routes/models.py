@@ -26,6 +26,7 @@ class Route(models.Model):
         'trains.Train',
         verbose_name='Список поездов',
     )
+    ids = models.JSONField()
 
     def __str__(self):
         return f"Маршрут {self.name} из {self.from_city} в {self.to_city}"

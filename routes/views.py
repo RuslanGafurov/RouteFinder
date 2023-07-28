@@ -1,20 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import DeleteView, ListView
 
-from cities.models import City
 from routes.forms import RouteForm, RouteModelForm
 from routes.models import Route
-from routes.services import get_routes
-from trains.models import Train
+from routes.services import get_cleaned_form, get_routes, sort_trains
 
 __all__ = (
     'add_route_view',
     'save_route_view',
     'RouteListView',
-    'RouteDetailView',
+    'route_detail_view',
     'RouteDeleteView',
 )
 
@@ -47,19 +45,7 @@ def add_route_view(request):
         context = {}
         data = request.POST
         if data:
-            from_city_id = int(data['from_city'])
-            to_city_id = int(data['to_city'])
-            total_time = int(data['total_time'])
-            tmp_trains = data['trains'].split(',')
-            trains_ids = [int(_id) for _id in tmp_trains if _id.isdigit()]
-            trains = Train.objects.filter(id__in=trains_ids).select_related('from_city', 'to_city')
-            cities = City.objects.filter(id__in=[from_city_id, to_city_id]).in_bulk()
-            form = RouteModelForm(initial={
-                'from_city': cities[from_city_id],
-                'to_city': cities[to_city_id],
-                'route_travel_time': total_time,
-                'trains': trains,
-            })
+            form = get_cleaned_form(data)
             context['form'] = form
         return render(request, 'routes/create.html', context)
     else:
@@ -87,9 +73,15 @@ class RouteListView(ListView):
     paginate_by = 3
 
 
-class RouteDetailView(DetailView):
-    queryset = Route.objects.all()
-    template_name = 'routes/detail.html'
+def route_detail_view(request, pk=None):
+    route = Route.objects.filter(pk=pk).first()
+    trains = route.trains.all()
+    sorted_trains = sort_trains(route, trains)
+    context = {
+        'route': route,
+        'trains': sorted_trains,
+    }
+    return render(request, 'routes/detail.html', context)
 
 
 class RouteDeleteView(LoginRequiredMixin, DeleteView):

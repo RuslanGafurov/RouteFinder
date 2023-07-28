@@ -14,10 +14,10 @@
         <h1></h1>
 
             <!-- Routes display -->
-            <h3>Детализация маршрута {{ object.name }}</h3>
+            <h3>Детализация маршрута {{ route.name }}</h3>
 
-            <p>Направление: {{ object.from_city }} - {{ object.to_city }}</p>
-            <p>Общее время в пути: {{ object.route_travel_time }}</p>
+            <p>Направление: {{ route.from_city }} - {{ route.to_city }}</p>
+            <p>Общее время в пути: {{ route.route_travel_time }}</p>
 
             <table class="table my-3">
                 <thead>
@@ -32,7 +32,8 @@
 
                 </thead>
                 <tbody>
-                    {% for train in object.trains.all %}
+
+                    {% for train in trains %}
                         <tr class="table-light">
                             <td>{{ train.name }}</td>
                             <td>{{ train.from_city }}</td>
@@ -40,6 +41,7 @@
                             <td>{{ train.travel_time }}</td>
                         </tr>
                     {% endfor %}
+
 
                 </tbody>
             </table><br>

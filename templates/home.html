@@ -22,6 +22,8 @@
                     <input type="hidden" name="from_city" value="{{ cities.from_city.id }}">
                     <input type="hidden" name="to_city" value="{{ cities.to_city.id }}">
                     <input type="hidden" name="total_time" value="{{ route.total_time }}">
+                    <input type="hidden" name="ids"
+                           value="{% for id in route.ids %}{{ id }}{% endfor %}">
                     <input type="hidden" name="trains"
                            value="{% for train in route.trains %}{{ train.id }},{% endfor %}">
 
