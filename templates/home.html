@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 
-{% block title %}
-    RouteFinder
-{% endblock title%}
+{% block title %}RF - {% if not routes %}главная{% else %}маршруты{% endif %}{% endblock title%}
 
 
 {% block content %}
