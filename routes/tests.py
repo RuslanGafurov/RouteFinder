@@ -5,9 +5,10 @@ from django.test import TestCase
 from django.urls import reverse
 
 from cities.models import City
+from common.tests import common_tests
 from routes.forms import RouteForm
-from trains.models import Train
 from routes.services import dfs_paths, get_graph
+from trains.models import Train
 
 
 class AllTestsCase(TestCase):
@@ -32,12 +33,6 @@ class AllTestsCase(TestCase):
             Train(name='t9', from_city=self.city_D, to_city=self.city_E, travel_time=4),
         ]
         Train.objects.bulk_create(trains_list)
-
-    def _common_tests(self, response, view):
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        if view == 'home':
-            self.assertTemplateUsed(response, template_name='home.html')
 
     def test_city_model_duplicate(self):
         """ Тестирование возникновения ошибки при создании дубля города """
@@ -70,7 +65,7 @@ class AllTestsCase(TestCase):
         path = reverse('home')
         response = self.client.get(path)
 
-        self._common_tests(response, 'home')
+        common_tests(self, response, 'home.html')
 
     def test_find_all_routes(self):
         """ Тестирование работоспособности функций построения графа и поиска маршрута """
@@ -126,5 +121,3 @@ class AllTestsCase(TestCase):
         }
         response = self.client.post('/route_search/', data)
         self.assertContains(response, 'Нет маршрута через заданный город', 1, HTTPStatus.OK)
-
-
