@@ -1,40 +1,40 @@
 # RouteFinder
-Сервис поиска оптимального маршрута из одного города в другой.
+Service for finding the best route from one city to another.
 
-## Содержание
-- [Приложения](#приложения)
-- [Разработка](#разработка)
-  - [Установка зависимостей](#зависимости)
-  - [Запуск сервера](#запуск)
-  - [Тестирование](#тестирование)
-- [Источники](#источники)
+## Content
+- [Applications](#applications)
+- [Development](#development)
+  - [Installing requirements](#requirements)
+  - [Server start](#start)
+  - [Testing](#testing)
+- [Ideas](#idea)
 
-## <a name="приложения">Приложения</a>
-В проекте содержатся следующие приложения:
+## <a name="applications">Applications</a>
+The project contains the following applications:
 - accounts
 - cities
 - trains
 - routes
 
-## <a name="разработка">Разработка</a> 
+## <a name="development">Development</a> 
 
-### <a name="зависимости">Установка зависимостей</a> 
-Для установки зависимостей, выполните команду:
+### <a name="requirements">Installing requirements</a> 
+To install requirements, run the command:
 ```python
 pip install -r requirements.txt
 ```
 
-### <a name="запуск">Запуск сервера</a> 
-Для запуска сервера, выполните команду:
+### <a name="start">Server start</a> 
+To start the server, run the command:
 ```python
 python manage.py runserver
 ```
 
-### <a name="тестирование">Тестирование</a> 
-Для запуска тестов, выполните команду:
+### <a name="testing">Testing</a> 
+To run tests, run the command:
 ```python
 python manage.py test
 ```
 
-## <a name="источники">Источники</a> 
-Идея написания данного проекта была взята из технического задания на позицию Junior Backend Developer.
+## <a name="idea">Ideas</a> 
+The idea of writing this project was taken from the terms of reference for the position of Junior Backend Developer.
